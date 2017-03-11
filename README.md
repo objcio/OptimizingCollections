@@ -1,5 +1,11 @@
 # Optimizing Swift Collections
 
+> :warning: **NOTE** :warning: This repository is in a prerelease state. 
+> The sample code it contains is usable, but we're still working on 
+> the video and the book mentioned below.
+> I will make a public announcement on Twitter when all items become available.
+> Meanwhile, let's keep this repo our little secret!
+
 This repository contains an overabundance of multimedia cyber-content
 supplementing my [dotSwift 2017][dotswift] talk about Optimizing Swift
 Collections. I describe several ways to implement the same simple ordered
