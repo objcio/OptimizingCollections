@@ -90,9 +90,8 @@ do {
         set.insert(i)
     }
     print(set)
-    print(set.reversed().map { $0 })
 
-    let evenMembers = set.filter { $0 % 2 == 0 }.map { "\($0)" }.joined(separator: ", ")
+    let evenMembers = set.reversed().lazy.filter { $0 % 2 == 0 }.map { "\($0)" }.joined(separator: ", ")
     print(evenMembers)
 }
 
