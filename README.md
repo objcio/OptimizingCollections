@@ -1,18 +1,12 @@
 # Optimizing Swift Collections
 
-> :warning: **NOTE** :warning: This repository is in a prerelease state. 
-> The sample code it contains is usable, but we're still working on 
-> the video and the book mentioned below.
-> I will make a public announcement on Twitter when all items become available.
-> Meanwhile, let's keep this repo our little secret!
+This repository contains an overabundance of multimedia content supplementing
+my [dotSwift 2017 talk about Optimizing Swift Collections][dotswift]. In this
+talk, I describe several ways to implement the same simple ordered set protocol
+in Swift, demonstrating how the language supports a number of surprisingly
+different approaches to programming.
 
-This repository contains an overabundance of multimedia cyber-content
-supplementing my [dotSwift 2017][dotswift] talk about Optimizing Swift
-Collections. I describe several ways to implement the same simple ordered
-set protocol in Swift, demonstrating how the language supports a number of
-surprisingly different approaches to programming.
-
-[dotswift]: http://2017.dotswift.io
+[dotswift]: http://www.thedotpost.com/2017/01/karoly-lorentey-optimizing-swift-collections
 
 - _Composition:_ Solving problems using the constructs we already have.
 - _Functional programming:_ Using pattern matching on algebraic data types and recursion to turn complicated algorithms into surprisingly simple code.
@@ -35,11 +29,20 @@ At every step, we trade additional complexity for improved runtime performance, 
 
 ## The Video
 
-The video of the talk will soon be available on the [dotSwift conference site][dotswift].  Meanwhile, check out my slides on [Speaker Deck][speakerdeck].
+You can watch the video of the talk by clicking on the image below.
 
-[<img src="Images/Title%20Slide.jpeg" width="512">][speakerdeck]
+[![dotSwift 2017 - Optimizing Swift Collections](https://img.youtube.com/vi/UdZP6JeTCkM/0.jpg)](https://www.youtube.com/watch?v=UdZP6JeTCkM)
+
+My slides are available on [Speaker Deck][speakerdeck].
+
+dotSwift talks are always a joy to watch; each year they have a great selection
+of speakers at excellent venues, and the organizers do an amazing job at
+capturing and editing the videos. I highly recommend you check out [the rest of
+this year's talks][talks], too; and if you can make it, you should not miss
+attending next year's conference in person.
 
 [speakerdeck]: https://speakerdeck.com/lorentey/optimizing-swift-collections
+[talks]: http://www.thedotpost.com/conference/dotswift-2017
 
 ## The Code
 
@@ -52,7 +55,7 @@ the talk:
 4. [`COWTree`](./Sources/COWTree.swift):
     A procedural, structs-and-classes variant of red-black trees that implements the [copy-on-write optimization][cow].
 5. [`BTree`](./Sources/BTree.swift): 
-    An optimized implementation of in-memory [B-trees][btree-wiki], based on my [`BTree` package][btree].
+    An implementation of in-memory [B-trees][btree-wiki], based on my [`BTree` package][btree].
 
 [rbt]: https://en.wikipedia.org/wiki/Red–black_tree
 [cow]: https://en.wikipedia.org/wiki/Copy-on-write
@@ -76,19 +79,21 @@ check out my [BTree package][btree] instead.
 
 ## The Book
 
-I wrote a 60-page book to explain the implementation of each of these data
-structures in detail. The book is available as a [pay-what-you-want ebook on
-Gumroad][gumroad], in nicely formatted PDF and EPUB variants. Buying the book
-also gets you an Xcode Playground that includes the entire text of the book
-along with fully editable, live code. You can open the playground in the iOS
-Playgrounds app, or in Xcode on Mac.
+I'm writing a short book to explain the implementation of each of these data
+structures in detail. You can download the beta preview of the book as a
+[60+-page pay-what-you-want ebook][gumroad], in nicely formatted PDF and EPUB
+variants. Buying the book also gets you an Xcode Playground that includes the
+entire text along with fully editable, live code. You can open the playground
+in the iOS Playgrounds app, or in Xcode on Mac.
 
 [![Book Cover](Images/Gumroad Cover@2x.png)][gumroad]
 
 [gumroad]: https://gum.co/OptimizingCollections
 
+(Naturally, buying the book now also gives you easy access to future updates later.)
+
 Any amount you may choose to pay is greatly appreciated: it helps me keep
-writing stuff like this rather than working on commercial projects. This book
+doing stuff like this rather than working on commercial projects. This book
 is my first experimental step in publishing my own writing. If feedback is
 encouraging, I'll definitely write more. But if you're short on money, there is
 no shame in getting the book for free.
