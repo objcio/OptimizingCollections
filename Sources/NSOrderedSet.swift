@@ -54,7 +54,7 @@ extension MyOrderedSet {
             options: .insertionIndex, 
             usingComparator: MyOrderedSet.compare)
     }
-    
+
     @discardableResult
     public mutating func insert(_ newElement: Element) -> (inserted: Bool, memberAfterInsert: Element) 
     {

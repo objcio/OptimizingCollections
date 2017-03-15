@@ -45,8 +45,8 @@ extension Color {
     }
 }
 
-extension AlgebraicTree {
-    func diagram(_ top: String = "", _ root: String = "", _ bottom: String = "") -> String {
+extension AlgebraicTree: CustomStringConvertible {
+    func diagram(_ top: String, _ root: String, _ bottom: String) -> String {
         switch self {
         case .empty:
             return root + "•\n"
@@ -58,39 +58,24 @@ extension AlgebraicTree {
                 + left.diagram(bottom + "│   ", bottom + "└───", bottom + "    ")
         }
     }
-}
 
-extension AlgebraicTree: CustomStringConvertible {
     public var description: String {
-        return self.diagram()
+        return self.diagram("", "", "")
     }
 }
 
 extension AlgebraicTree {
-    private func _inserting(_ element: Element) 
-        -> (tree: AlgebraicTree, old: Element?) 
+    @discardableResult
+    public mutating func insert(_ element: Element) -> (inserted: Bool, memberAfterInsert: Element) 
     {
-        switch self {
-        case .empty:
-            return (.node(.red, element, .empty, .empty), nil)
-
-        case let .node(color, value, left, right) where element < value:
-            let (l, old) = left._inserting(element)
-            if let old = old { return (self, old) }
-            return (balanced(color, value, l, right), nil)
-
-        case let .node(color, value, left, right) where element > value:
-            let (r, old) = right._inserting(element)
-            if let old = old { return (self, old) }
-            return (balanced(color, value, left, r), nil)
-
-        case let .node(_, value, _, _):
-            return (self, value)
-        }
+        let (tree, old) = inserting(element)
+        self = tree
+        return (old == nil, old ?? element)
     }
+}
 
-    func inserting(_ element: Element) 
-        -> (tree: AlgebraicTree, old: Element?) 
+extension AlgebraicTree {
+    public func inserting(_ element: Element) -> (tree: AlgebraicTree, existingMember: Element?) 
     {
         let (tree, old) = _inserting(element)
         if case let .node(.red, value, left, right) = tree {
@@ -101,18 +86,31 @@ extension AlgebraicTree {
 }
 
 extension AlgebraicTree {
-    @discardableResult
-    public mutating func insert(_ element: Element) 
-        -> (inserted: Bool, memberAfterInsert: Element) 
+    func _inserting(_ element: Element) -> (tree: AlgebraicTree, old: Element?) 
     {
-        let (tree, old) = inserting(element)
-        self = tree
-        return (old == nil, old ?? element)
+        switch self {
+
+        case .empty:
+            return (.node(.red, element, .empty, .empty), nil)
+
+        case let .node(_, value, _, _) where value == element:
+            return (self, value)
+
+        case let .node(color, value, left, right) where value > element:
+            let (l, old) = left._inserting(element)
+            if let old = old { return (self, old) }
+            return (balanced(color, value, l, right), nil)
+
+        case let .node(color, value, left, right):
+            let (r, old) = right._inserting(element)
+            if let old = old { return (self, old) }
+            return (balanced(color, value, left, r), nil)
+        }
     }
 }
 
 extension AlgebraicTree {
-    func balancedBAD(_ color: Color, _ value: Element, _ left: AlgebraicTree, _ right: AlgebraicTree) -> AlgebraicTree {
+    func balanced_(_ color: Color, _ value: Element, _ left: AlgebraicTree, _ right: AlgebraicTree) -> AlgebraicTree {
         switch (color, value, left, right) {
         case let (.black, z, .node(.red, y, .node(.red, x, a, b), c), d),
             let (.black, z, .node(.red, x, a, .node(.red, y, b, c)), d),
@@ -203,20 +201,6 @@ extension AlgebraicTree {
 }
 
 extension AlgebraicTree: BidirectionalCollection {
-    private func value(following element: Element) -> (found: Bool, next: Element?) {
-        guard case let .node(_, value, left, right) = self else { 
-            return (false, nil) 
-        }
-        if element < value {
-            let v = left.value(following: element)
-            return (v.found, v.next ?? value)
-        }
-        if element > value {
-            return right.value(following: element)
-        }
-        return (true, right.minimum)
-    }
-
     public func formIndex(after i: inout Index) {
         let v = self.value(following: i.value!)
         precondition(v.found)
@@ -231,7 +215,23 @@ extension AlgebraicTree: BidirectionalCollection {
 }
 
 extension AlgebraicTree {
-    private func value(preceding element: Element) -> (found: Bool, next: Element?) {
+    func value(following element: Element) -> (found: Bool, next: Element?) {
+        switch self {
+            case .empty:
+                return (false, nil)
+            case .node(_, element, _, let right):
+                return (true, right.minimum)
+            case let .node(_, value, left, _) where value > element:
+                let v = left.value(following: element)
+                return (v.found, v.next ?? value)
+            case let .node(_, _, _, right):
+                return right.value(following: element)
+        }
+    }
+}
+
+extension AlgebraicTree {
+    func value(preceding element: Element) -> (found: Bool, next: Element?) {
         var node = self
         var next: Element? = nil
         while case let .node(_, value, left, right) = node {

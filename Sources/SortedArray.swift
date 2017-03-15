@@ -1,11 +1,7 @@
-struct SortedArray<Element: Comparable>: OrderedSet {
+public struct SortedArray<Element: Comparable>: OrderedSet {
     fileprivate var storage: [Element] = []
-}
-
-extension SortedArray {
-    func forEach(_ body: (Element) throws -> Void) rethrows {
-        try storage.forEach(body)
-    }
+    
+    public init() {}
 }
 
 extension SortedArray {
@@ -26,24 +22,29 @@ extension SortedArray {
 }
 
 extension SortedArray {
-    func index(of element: Element) -> Int? {
+    public func index(of element: Element) -> Int? {
         let i = index(for: element)
-        guard i < count && self[i] == element else { return nil }
+        guard i < count, self[i] == element else { return nil }
         return i
     }
 }
 
 extension SortedArray {
-    func contains(_ element: Element) -> Bool {
+    public func contains(_ element: Element) -> Bool {
         let index = self.index(for: element)
         return index < count && storage[index] == element
     }
 }
 
 extension SortedArray {
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
+        try storage.forEach(body)
+    }
+}
+
+extension SortedArray {
     @discardableResult
-    mutating func insert(_ newElement: Element) 
-        -> (inserted: Bool, memberAfterInsert: Element) 
+    public mutating func insert(_ newElement: Element) -> (inserted: Bool, memberAfterInsert: Element) 
     {
         let i = self.index(for: newElement)
         if i < count && storage[i] == newElement {
@@ -55,10 +56,10 @@ extension SortedArray {
 }
 
 extension SortedArray: RandomAccessCollection {
-    typealias Indices = CountableRange<Int>
+    public typealias Indices = CountableRange<Int>
 
-    var startIndex: Int { return 0 }
-    var endIndex: Int { return storage.count }
+    public var startIndex: Int { return 0 }
+    public var endIndex: Int { return storage.count }
 
-    subscript(index: Int) -> Element { return storage[index] }
+    public subscript(index: Int) -> Element { return storage[index] }
 }

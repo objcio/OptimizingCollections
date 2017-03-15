@@ -1,4 +1,18 @@
 do {
+    print((0 ..< 20).shuffled())
+    print((0 ..< 20).shuffled())
+    print((0 ..< 20).shuffled())
+}
+
+do {
+    var a = [2, 3, 4]
+    var b = a
+    a.insert(1, at: 0)
+    print(a)
+    print(b)
+}
+
+do {
     var set = MyOrderedSet<Int>()
     for i in (1 ... 20).shuffled() {
         set.insert(i)
@@ -37,16 +51,16 @@ do {
 }
 
 do {
-    let emptyTree: AlgebraicTree<Int> = .empty
+        let emptyTree: AlgebraicTree<Int> = .empty
     print(emptyTree)
 
-    let tinyTree: AlgebraicTree<Int> = .node(.black, 42, .empty, .empty)
+        let tinyTree: AlgebraicTree<Int> = .node(.black, 42, .empty, .empty)
     print(tinyTree)
 
-    let smallTree: AlgebraicTree<Int> = 
-        .node(.black, 2, 
-            .node(.red, 1, .empty, .empty), 
-            .node(.red, 3, .empty, .empty))
+        let smallTree: AlgebraicTree<Int> = 
+            .node(.black, 2, 
+                .node(.red, 1, .empty, .empty), 
+                .node(.red, 3, .empty, .empty))
     print(smallTree)
 
     let bigTree: AlgebraicTree<Int> =
