@@ -86,7 +86,7 @@ variants. Buying the book also gets you an Xcode Playground that includes the
 entire text along with fully editable, live code. You can open the playground
 in the iOS Playgrounds app, or in Xcode on Mac.
 
-[![Book Cover](Images/Gumroad Cover@2x.png)][gumroad]
+[![Book Cover](Images/Gumroad%20Cover@2x.png)][gumroad]
 
 [gumroad]: https://gum.co/OptimizingCollections
 
@@ -95,8 +95,7 @@ in the iOS Playgrounds app, or in Xcode on Mac.
 Any amount you may choose to pay is greatly appreciated: it helps me keep
 doing stuff like this rather than working on commercial projects. This book
 is my first experimental step in publishing my own writing. If feedback is
-encouraging, I'll definitely write more. But if you're short on money, there is
-no shame in getting the book for free.
+encouraging, I'll definitely write more.
 
 Note that the code inside this repository was actually extracted directly from
 the code samples in the book.
