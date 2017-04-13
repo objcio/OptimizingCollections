@@ -3,12 +3,12 @@ public enum Color {
     case red
 }
 
-public enum AlgebraicTree<Element: Comparable> {
+public enum RedBlackTree<Element: Comparable> {
     case empty
-    indirect case node(Color, Element, AlgebraicTree, AlgebraicTree)
+    indirect case node(Color, Element, RedBlackTree, RedBlackTree)
 }
 
-public extension AlgebraicTree {
+public extension RedBlackTree {
     func contains(_ element: Element) -> Bool {
         switch self {
         case .empty:
@@ -23,7 +23,7 @@ public extension AlgebraicTree {
     }
 }
 
-public extension AlgebraicTree {
+public extension RedBlackTree {
     func forEach(_ body: (Element) throws -> Void) rethrows {
         switch self {
         case .empty:
@@ -45,7 +45,7 @@ extension Color {
     }
 }
 
-extension AlgebraicTree: CustomStringConvertible {
+extension RedBlackTree: CustomStringConvertible {
     func diagram(_ top: String, _ root: String, _ bottom: String) -> String {
         switch self {
         case .empty:
@@ -64,7 +64,7 @@ extension AlgebraicTree: CustomStringConvertible {
     }
 }
 
-extension AlgebraicTree {
+extension RedBlackTree {
     @discardableResult
     public mutating func insert(_ element: Element) -> (inserted: Bool, memberAfterInsert: Element) 
     {
@@ -74,19 +74,20 @@ extension AlgebraicTree {
     }
 }
 
-extension AlgebraicTree {
-    public func inserting(_ element: Element) -> (tree: AlgebraicTree, existingMember: Element?) 
-    {
+extension RedBlackTree {
+    public func inserting(_ element: Element) -> (tree: RedBlackTree, existingMember: Element?) {
         let (tree, old) = _inserting(element)
-        if case let .node(.red, value, left, right) = tree {
+        switch tree {
+        case let .node(.red, value, left, right):
             return (.node(.black, value, left, right), old)
+        default:
+            return (tree, old)
         }
-        return (tree, old)
     }
 }
 
-extension AlgebraicTree {
-    func _inserting(_ element: Element) -> (tree: AlgebraicTree, old: Element?) 
+extension RedBlackTree {
+    func _inserting(_ element: Element) -> (tree: RedBlackTree, old: Element?) 
     {
         switch self {
 
@@ -109,22 +110,8 @@ extension AlgebraicTree {
     }
 }
 
-extension AlgebraicTree {
-    func balanced_(_ color: Color, _ value: Element, _ left: AlgebraicTree, _ right: AlgebraicTree) -> AlgebraicTree {
-        switch (color, value, left, right) {
-        case let (.black, z, .node(.red, y, .node(.red, x, a, b), c), d),
-            let (.black, z, .node(.red, x, a, .node(.red, y, b, c)), d),
-            let (.black, x, a, .node(.red, z, .node(.red, y, b, c), d)),
-            let (.black, x, a, .node(.red, y, b, .node(.red, z, c, d))):
-            return .node(.red, y, .node(.black, x, a, b), .node(.black, z, c, d))
-        default:
-            return .node(color, value, left,  right)
-        }
-    }
-}
-
-extension AlgebraicTree {
-    func balanced(_ color: Color, _ value: Element, _ left: AlgebraicTree, _ right: AlgebraicTree) -> AlgebraicTree {
+extension RedBlackTree {
+    func balanced(_ color: Color, _ value: Element, _ left: RedBlackTree, _ right: RedBlackTree) -> RedBlackTree {
         switch (color, value, left, right) {
         case let (.black, z, .node(.red, y, .node(.red, x, a, b), c), d):
             return .node(.red, y, .node(.black, x, a, b), .node(.black, z, c, d))
@@ -150,12 +137,14 @@ extension AlgebraicIndex: Comparable {
     }
 
     public static func <(left: AlgebraicIndex, right: AlgebraicIndex) -> Bool {
-        if let lv = left.value, let rv = right.value { return lv < rv }
+        if let lv = left.value, let rv = right.value { 
+            return lv < rv 
+        }
         return left.value != nil
     }
 }
 
-extension AlgebraicTree {
+extension RedBlackTree {
     var minimum: Element? {
         switch self {
         case .empty: 
@@ -166,7 +155,7 @@ extension AlgebraicTree {
     }
 }
 
-extension AlgebraicTree {
+extension RedBlackTree {
     var maximum: Element? {
         var node = self
         var maximum: Element? = nil
@@ -178,7 +167,7 @@ extension AlgebraicTree {
     }
 }
 
-extension AlgebraicTree: Collection {
+extension RedBlackTree: Collection {
     public typealias Index = AlgebraicIndex<Element>
 
     public var startIndex: Index { return Index(value: self.minimum) }
@@ -189,7 +178,7 @@ extension AlgebraicTree: Collection {
     }
 }
 
-extension AlgebraicTree {
+extension RedBlackTree {
     public var count: Int {
         switch self {
         case .empty:
@@ -200,7 +189,7 @@ extension AlgebraicTree {
     }
 }
 
-extension AlgebraicTree: BidirectionalCollection {
+extension RedBlackTree: BidirectionalCollection {
     public func formIndex(after i: inout Index) {
         let v = self.value(following: i.value!)
         precondition(v.found)
@@ -214,7 +203,7 @@ extension AlgebraicTree: BidirectionalCollection {
     }
 }
 
-extension AlgebraicTree {
+extension RedBlackTree {
     func value(following element: Element) -> (found: Bool, next: Element?) {
         switch self {
             case .empty:
@@ -230,25 +219,27 @@ extension AlgebraicTree {
     }
 }
 
-extension AlgebraicTree {
+extension RedBlackTree {
     func value(preceding element: Element) -> (found: Bool, next: Element?) {
         var node = self
-        var next: Element? = nil
+        var previous: Element? = nil
         while case let .node(_, value, left, right) = node {
-            if element > value {
-                next = value
-                node = right
-            }
-            else if element < value {
+            if value > element {
                 node = left
+            }
+            else if value < element {
+                previous = value
+                node = right
             }
             else {
                 return (true, left.maximum)
             }
         }
-        return (false, next)
+        return (false, previous)
     }
+}
 
+extension RedBlackTree {
     public func formIndex(before i: inout Index) {
         let v = self.value(preceding: i.value!)
         precondition(v.found)
@@ -262,7 +253,7 @@ extension AlgebraicTree {
     }
 }
 
-extension AlgebraicTree: OrderedSet {
+extension RedBlackTree: SortedSet {
     public init() {
         self = .empty
     }

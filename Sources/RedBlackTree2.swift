@@ -1,31 +1,31 @@
-public struct COWTree<Element: Comparable>: OrderedSet {
-    var root: COWNode<Element>? = nil
+public struct RedBlackTree2<Element: Comparable>: SortedSet {
+    fileprivate var root: Node<Element>? = nil
     
     public init() {}
 }
 
-final class COWNode<Element: Comparable> {
+private final class Node<Element: Comparable> {
     var color: Color
-    var left: COWNode<Element>? = nil
     var value: Element
-    var right: COWNode<Element>? = nil
-    var mutationCount: Int = 0
+    var left: Node<Element>? = nil
+    var right: Node<Element>? = nil
+    var mutationCount: Int64 = 0
 
-    init(_ color: Color, _ left: COWNode?, _ value: Element, _ right: COWNode?) {
+    init(_ color: Color, _ value: Element, _ left: Node?, _ right: Node?) {
         self.color = color
-        self.left = left
         self.value = value
+        self.left = left
         self.right = right
     }
 }
 
-extension COWTree {
+extension RedBlackTree2 {
     public func forEach(_ body: (Element) throws -> Void) rethrows {
         try root?.forEach(body)
     }
 }
 
-extension COWNode {
+extension Node {
     func forEach(_ body: (Element) throws -> Void) rethrows {
         try left?.forEach(body)
         try body(value)
@@ -33,7 +33,7 @@ extension COWNode {
     }
 }
 
-extension COWTree {
+extension RedBlackTree2 {
     public func contains(_ element: Element) -> Bool {
         var node = root
         while let n = node {
@@ -51,7 +51,7 @@ extension COWTree {
     }
 }
 
-private func diagram<Element: Comparable>(for node: COWNode<Element>?, _ top: String = "", _ root: String = "", _ bottom: String = "") -> String {
+private func diagram<Element: Comparable>(for node: Node<Element>?, _ top: String = "", _ root: String = "", _ bottom: String = "") -> String {
     guard let node = node else {
         return root + "•\n"
     }
@@ -63,20 +63,20 @@ private func diagram<Element: Comparable>(for node: COWNode<Element>?, _ top: St
         + diagram(for: node.left, bottom + "│   ", bottom + "└───", bottom + "    ")
 }
 
-extension COWTree: CustomStringConvertible {
+extension RedBlackTree2: CustomStringConvertible {
     public var description: String {
         return diagram(for: root)
     }
 }
 
-extension COWNode {
-    func clone() -> COWNode {
-        return COWNode(color, left, value, right)
+extension Node {
+    func clone() -> Node {
+        return Node(color, value, left, right)
     }
 }
 
-extension COWTree {
-    mutating func makeRootUnique() -> COWNode<Element>? {
+extension RedBlackTree2 {
+    fileprivate mutating func makeRootUnique() -> Node<Element>? {
         if root != nil, !isKnownUniquelyReferenced(&root) {
             root = root!.clone()
         }
@@ -84,15 +84,15 @@ extension COWTree {
     }
 }
 
-extension COWNode {
-    func makeLeftUnique() -> COWNode? {
+extension Node {
+    func makeLeftUnique() -> Node? {
         if left != nil, !isKnownUniquelyReferenced(&left) {
             left = left!.clone()
         }
         return left
     }
 
-    func makeRightUnique() -> COWNode? {
+    func makeRightUnique() -> Node? {
         if right != nil, !isKnownUniquelyReferenced(&right) {
             right = right!.clone()
         }
@@ -100,11 +100,11 @@ extension COWNode {
     }
 }
 
-extension COWTree {
+extension RedBlackTree2 {
     @discardableResult
     public mutating func insert(_ element: Element) -> (inserted: Bool, memberAfterInsert: Element) {
         guard let root = makeRootUnique() else {
-            self.root = COWNode(.black, nil, element, nil)
+            self.root = Node(.black, element, nil, nil)
             return (true, element)
         }
         defer { root.color = .black }
@@ -112,7 +112,7 @@ extension COWTree {
     }
 }
 
-extension COWNode {
+extension Node {
     func insert(_ element: Element)  -> (inserted: Bool, memberAfterInsert: Element) {
         mutationCount += 1
         if element < self.value {
@@ -122,7 +122,7 @@ extension COWNode {
                 return result
             }
             else {
-                self.left = COWNode(.red, nil, element, nil)
+                self.left = Node(.red, element, nil, nil)
                 return (inserted: true, memberAfterInsert: element)
             }
         }
@@ -133,7 +133,7 @@ extension COWNode {
                 return result
             }
             else {
-                self.right = COWNode(.red, nil, element, nil)
+                self.right = Node(.red, element, nil, nil)
                 return (inserted: true, memberAfterInsert: element)
             }
         }
@@ -141,7 +141,7 @@ extension COWNode {
     }
 }
 
-extension COWNode {
+extension Node {
     func balance() {
         if self.color == .red  { return }
         if left?.color == .red {
@@ -199,49 +199,74 @@ private struct Weak<Wrapped: AnyObject> {
     }
 }
 
-public struct COWTreeIndex<Element: Comparable> {
-    fileprivate weak var root: COWNode<Element>?
-    fileprivate let mutationCount: Int
+public struct RedBlackTree2Index<Element: Comparable> {
+    fileprivate weak var root: Node<Element>?
+    fileprivate let mutationCount: Int64
     
-    fileprivate var path: [Weak<COWNode<Element>>]
+    fileprivate var path: [Weak<Node<Element>>]
     
-    fileprivate init(root: COWNode<Element>?, path: [Weak<COWNode<Element>>]) {
+    fileprivate init(root: Node<Element>?, path: [Weak<Node<Element>>]) {
         self.root = root
         self.mutationCount = root?.mutationCount ?? -1
         self.path = path
     }
 }
 
-extension COWTreeIndex {
-    fileprivate func validate(for root: COWNode<Element>?) {
+extension RedBlackTree2: BidirectionalCollection {
+    public typealias Index = RedBlackTree2Index<Element>
+
+    public var endIndex: Index {
+        return Index(root: root, path: [])
+    }
+
+    public var startIndex: Index {
+        var path: [Weak<Node<Element>>] = []
+        var node = root
+        while let n = node {
+            path.append(Weak(n))
+            node = n.left
+        }
+        return Index(root: root, path: path)
+    }
+}
+
+extension RedBlackTree2Index {
+    fileprivate func validate(for root: Node<Element>?) {
         precondition(self.root === root)
         precondition(self.mutationCount == root?.mutationCount ?? -1)
     }
 }
 
-extension COWTreeIndex {
-    fileprivate static func validate(_ left: COWTreeIndex, _ right: COWTreeIndex) {
+extension RedBlackTree2Index {
+    fileprivate static func validate(_ left: RedBlackTree2Index, _ right: RedBlackTree2Index) {
         precondition(left.root === right.root)
         precondition(left.mutationCount == right.mutationCount)
         precondition(left.mutationCount == left.root?.mutationCount ?? -1)
     }
 }
 
-extension COWTreeIndex {
-    fileprivate var current: COWNode<Element>? {
+extension RedBlackTree2 {
+    public subscript(_ index: Index) -> Element {
+        index.validate(for: root)
+        return index.path.last!.value!.value
+    }
+}
+
+extension RedBlackTree2Index {
+    fileprivate var current: Node<Element>? {
         guard let ref = path.last else { return nil }
         return ref.value!
     }
 }
 
-extension COWTreeIndex: Comparable {
-    public static func ==(left: COWTreeIndex, right: COWTreeIndex) -> Bool {
-        COWTreeIndex.validate(left, right)
+extension RedBlackTree2Index: Comparable {
+    public static func ==(left: RedBlackTree2Index, right: RedBlackTree2Index) -> Bool {
+        RedBlackTree2Index.validate(left, right)
         return left.current === right.current
     }
 
-    public static func <(left: COWTreeIndex, right: COWTreeIndex) -> Bool {
-        COWTreeIndex.validate(left, right)
+    public static func <(left: RedBlackTree2Index, right: RedBlackTree2Index) -> Bool {
+        RedBlackTree2Index.validate(left, right)
         switch (left.current, right.current) {
         case let (.some(a), .some(b)):
             return a.value < b.value
@@ -253,32 +278,7 @@ extension COWTreeIndex: Comparable {
     }
 }
 
-extension COWTree: BidirectionalCollection {
-    public typealias Index = COWTreeIndex<Element>
-
-    public var endIndex: Index {
-        return Index(root: root, path: [])
-    }
-
-    public var startIndex: Index {
-        var path: [Weak<COWNode<Element>>] = []
-        var node = root
-        while let n = node {
-            path.append(Weak(n))
-            node = n.left
-        }
-        return Index(root: root, path: path)
-    }
-}
-
-extension COWTree {
-    public subscript(_ index: Index) -> Element {
-        index.validate(for: root)
-        return index.path.last!.value!.value
-    }
-}
-
-extension COWTree {
+extension RedBlackTree2 {
     public func formIndex(after index: inout Index) {
         index.validate(for: root)
         index.formSuccessor()
@@ -291,7 +291,7 @@ extension COWTree {
     }
 }
 
-extension COWTreeIndex {
+extension RedBlackTree2Index {
     mutating func formSuccessor() {
         guard let node = current else { preconditionFailure() }
         if var n = node.right {
@@ -313,7 +313,7 @@ extension COWTreeIndex {
     }
 }
 
-extension COWTree {
+extension RedBlackTree2 {
     public func formIndex(before index: inout Index) {
         index.validate(for: root)
         index.formPredecessor()
@@ -326,7 +326,7 @@ extension COWTree {
     }
 }
 
-extension COWTreeIndex {
+extension RedBlackTree2Index {
     mutating func formPredecessor() {
         guard let node = current else { preconditionFailure() }
         if var n = node.left {
@@ -345,5 +345,27 @@ extension COWTreeIndex {
                 path.removeLast()
             }
         }
+    }
+}
+
+public struct RedBlackTree2Iterator<Element: Comparable>: IteratorProtocol {
+    let tree: RedBlackTree2<Element>
+    var index: RedBlackTree2Index<Element>
+        
+    init(_ tree: RedBlackTree2<Element>) {
+        self.tree = tree
+        self.index = tree.startIndex
+    }
+    
+    public mutating func next() -> Element? {
+        if index.path.isEmpty { return nil }
+        defer { index.formSuccessor() }
+        return index.path.last!.value!.value
+    }
+}
+
+extension RedBlackTree2 {
+    public func makeIterator() -> RedBlackTree2Iterator<Element> {
+        return RedBlackTree2Iterator(self)
     }
 }

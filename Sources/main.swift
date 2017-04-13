@@ -13,25 +13,6 @@ do {
 }
 
 do {
-    var set = MyOrderedSet<Int>()
-    for i in (1 ... 20).shuffled() {
-        set.insert(i)
-    }
-
-    print(set)
-
-    print(set.contains(7))
-    print(set.contains(42))
-
-    print(set.reduce(0, +))
-
-    let copy = set
-    set.insert(42)
-    print(copy)
-    print(set)
-}
-
-do {
     var set = SortedArray<Int>()
     for i in (0 ..< 22).shuffled() {
         set.insert(2 * i)
@@ -51,19 +32,64 @@ do {
 }
 
 do {
-        let emptyTree: AlgebraicTree<Int> = .empty
+    var set = OrderedSet<Int>()
+    for i in (1 ... 20).shuffled() {
+        set.insert(i)
+    }
+
+    print(set)
+
+    print(set.contains(7))
+    print(set.contains(42))
+
+    print(set.reduce(0, +))
+
+    let copy = set
+    set.insert(42)
+    print(copy)
+    print(set)
+}
+
+import Foundation
+
+struct Value: Comparable {
+    let value: Int
+    init(_ value: Int) { self.value = value }
+    
+    static func ==(left: Value, right: Value) -> Bool {
+        return left.value == right.value
+    }
+    
+    static func <(left: Value, right: Value) -> Bool {
+        return left.value < right.value
+    }
+}
+
+do {
+    print((Value(42) as AnyObject).isEqual(Value(42) as AnyObject))
+    print((Value(42) as AnyObject).hash)
+    print((Value(42) as AnyObject).hash)
+
+    var values = OrderedSet<Value>()
+    (1 ... 20).shuffled().map(Value.init).forEach { values.insert($0) }
+    print(values.contains(Value(7)))
+    print(values.contains(Value(42)))
+}
+
+do {
+        let emptyTree: RedBlackTree<Int> = .empty
     print(emptyTree)
 
-        let tinyTree: AlgebraicTree<Int> = .node(.black, 42, .empty, .empty)
+        let tinyTree: RedBlackTree<Int> = .node(.black, 42, .empty, .empty)
     print(tinyTree)
 
-        let smallTree: AlgebraicTree<Int> = 
+        let smallTree: RedBlackTree<Int> = 
             .node(.black, 2, 
                 .node(.red, 1, .empty, .empty), 
                 .node(.red, 3, .empty, .empty))
     print(smallTree)
 
-    let bigTree: AlgebraicTree<Int> =
+    let bigTree: RedBlackTree<Int> =
         .node(.black, 9,
             .node(.red, 5,
                 .node(.black, 1, .empty, .node(.red, 4, .empty, .empty)),
@@ -75,7 +101,7 @@ do {
                     .node(.red, 17, .empty, .empty))))
     print(bigTree)
 
-    var set = AlgebraicTree<Int>.empty
+    var set = RedBlackTree<Int>.empty
     for i in (1 ... 20).shuffled() {
         set.insert(i)
     }
@@ -85,7 +111,7 @@ do {
 }
 
 do {
-    var set = COWTree<Int>()
+    var set = RedBlackTree2<Int>()
     for i in (1 ... 20).shuffled() {
         set.insert(i)
     }
@@ -111,8 +137,7 @@ do {
 
 do {
     func factorial(_ n: Int) -> Int {
-        guard n > 1 else { return 1 }
-        return n * factorial(n - 1)
+        return (1 ... max(1, n)).reduce(1, *)
     }
     print(factorial(4))
     print(factorial(10))

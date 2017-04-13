@@ -80,22 +80,22 @@ check out my [BTree package][btree] instead.
 ## The Book
 
 I'm writing a short book to explain the implementation of each of these data
-structures in detail. You can download the beta preview of the book as a
-[60+-page pay-what-you-want ebook][gumroad], in nicely formatted PDF and EPUB
-variants. Buying the book also gets you an Xcode Playground that includes the
-entire text along with fully editable, live code. You can open the playground
-in the iOS Playgrounds app, or in Xcode on Mac.
+structures in detail. The beta preview of the book is available as a [100+-page
+ebook from Gumroad][gumroad], in nicely formatted PDF and EPUB variants. Buying
+the book also gets you an Xcode Playground that includes the entire text along
+with fully editable, live code. You can open the playground in the iOS
+Playgrounds app, or in Xcode on Mac.
 
 [![Book Cover](Images/Gumroad%20Cover@2x.png)][gumroad]
 
 [gumroad]: https://gum.co/OptimizingCollections
 
-(Naturally, buying the book now also gives you easy access to future updates later.)
+(Naturally, buying the book now also gives you easy access to future updates of
+it.)
 
-Any amount you may choose to pay is greatly appreciated: it helps me keep
-doing stuff like this rather than working on commercial projects. This book
-is my first experimental step in publishing my own writing. If feedback is
-encouraging, I'll definitely write more.
+This book is my first experimental step in publishing my own writing. Proceeds
+from the book help me keep doing stuff like this rather than working on
+commercial projects. If feedback is encouraging, I'll definitely write more.
 
 Note that the code inside this repository was actually extracted directly from
 the code samples in the book.

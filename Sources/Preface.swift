@@ -4,7 +4,7 @@ extension Sequence {
     public func shuffled() -> [Iterator.Element] {
         var contents = Array(self)
         for i in 0 ..< contents.count {
-            // FIXME: This will break if we have 2^32 elements or more.
+            // FIXME: This breaks if we have 2^32 elements or more.
             let j = Int(arc4random_uniform(UInt32(contents.count)))
             if i != j {
                 swap(&contents[i], &contents[j])

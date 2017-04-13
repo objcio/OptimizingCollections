@@ -2,25 +2,51 @@ import Foundation
 
 private class Canary {}
 
-public struct MyOrderedSet<Element: Comparable>: OrderedSet {
+public struct OrderedSet<Element: Comparable>: SortedSet {
     fileprivate var storage = NSMutableOrderedSet()
     fileprivate var canary = Canary()
     public init() {}
 }
 
-extension MyOrderedSet {
-    public func contains(_ element: Element) -> Bool {
-        return storage.contains(element)
-    }
-}
-
-extension MyOrderedSet {
+extension OrderedSet {
     public func forEach(_ body: (Element) -> Void) {
         storage.forEach { body($0 as! Element) }
     }
 }
 
-extension MyOrderedSet: RandomAccessCollection {
+extension OrderedSet {
+    fileprivate static func compare(_ a: Any, _ b: Any) -> ComparisonResult 
+    {
+        let a = a as! Element, b = b as! Element
+        return a < b ? .orderedAscending
+            : a > b ? .orderedDescending
+            : .orderedSame
+    }
+}
+
+extension OrderedSet {
+    public func index(of element: Element) -> Int? {
+        let index = storage.index(
+            of: element, 
+            inSortedRange: NSRange(0 ..< storage.count),
+            usingComparator: OrderedSet.compare)
+        return index == NSNotFound ? nil : index
+    }
+}
+
+extension OrderedSet {
+    public func contains(_ element: Element) -> Bool {
+        return index(of: element) != nil
+    }
+}
+
+extension OrderedSet {
+    public func contains2(_ element: Element) -> Bool {
+        return storage.contains(element) || index(of: element) != nil
+    }
+}
+
+extension OrderedSet: RandomAccessCollection {
     public typealias Index = Int
     public typealias Indices = CountableRange<Int>
 
@@ -29,7 +55,7 @@ extension MyOrderedSet: RandomAccessCollection {
     public subscript(i: Int) -> Element { return storage[i] as! Element }
 }
 
-extension MyOrderedSet {
+extension OrderedSet {
     fileprivate mutating func makeUnique() {
         if !isKnownUniquelyReferenced(&canary) {
             storage = storage.mutableCopy() as! NSMutableOrderedSet
@@ -38,27 +64,21 @@ extension MyOrderedSet {
     }
 }
 
-extension MyOrderedSet {
-    private static func compare(_ a: Any, _ b: Any) -> ComparisonResult 
-    {
-        let a = a as! Element, b = b as! Element
-        return a < b ? .orderedAscending
-            : a > b ? .orderedDescending
-            : .orderedSame
-    }
-
-    fileprivate func index(for element: Element) -> Int {
+extension OrderedSet {
+    fileprivate func slot(of value: Element) -> Int {
         return storage.index(
-            of: element, 
+            of: value, 
             inSortedRange: NSRange(0 ..< storage.count),
-            options: .insertionIndex, 
-            usingComparator: MyOrderedSet.compare)
+            options: .insertionIndex,
+            usingComparator: OrderedSet.compare)
     }
+}
 
+extension OrderedSet {
     @discardableResult
     public mutating func insert(_ newElement: Element) -> (inserted: Bool, memberAfterInsert: Element) 
     {
-        let index = self.index(for: newElement)
+        let index = self.slot(of: newElement)
         if index < storage.count, storage[index] as! Element == newElement {
             return (false, storage[index] as! Element)
         }

@@ -1,4 +1,4 @@
-public struct SortedArray<Element: Comparable>: OrderedSet {
+public struct SortedArray<Element: Comparable>: SortedSet {
     fileprivate var storage: [Element] = []
     
     public init() {}
@@ -6,26 +6,26 @@ public struct SortedArray<Element: Comparable>: OrderedSet {
 
 extension SortedArray {
     func index(for element: Element) -> Int {
-        var i = 0
-        var j = storage.count
-        while i < j {
-            let middle = i + (j - i) / 2
+        var low = 0
+        var high = storage.count
+        while low < high {
+            let middle = low + (high - low) / 2
             if element > storage[middle] {
-                i = middle + 1
+                low = middle + 1
             }
             else {
-                j = middle
+                high = middle
             }
         }
-        return i
+        return low
     }
 }
 
 extension SortedArray {
     public func index(of element: Element) -> Int? {
-        let i = index(for: element)
-        guard i < count, self[i] == element else { return nil }
-        return i
+        let index = self.index(for: element)
+        guard index < count, self[index] == element else { return nil }
+        return index
     }
 }
 
@@ -43,14 +43,20 @@ extension SortedArray {
 }
 
 extension SortedArray {
+    public func sorted() -> [Element] {
+        return storage
+    }
+}
+
+extension SortedArray {
     @discardableResult
     public mutating func insert(_ newElement: Element) -> (inserted: Bool, memberAfterInsert: Element) 
     {
-        let i = self.index(for: newElement)
-        if i < count && storage[i] == newElement {
-            return (false, storage[i])
+        let index = self.index(for: newElement)
+        if index < count && storage[index] == newElement {
+            return (false, storage[index])
         }
-        storage.insert(newElement, at: i)
+        storage.insert(newElement, at: index)
         return (true, newElement)
     }
 }
@@ -58,8 +64,8 @@ extension SortedArray {
 extension SortedArray: RandomAccessCollection {
     public typealias Indices = CountableRange<Int>
 
-    public var startIndex: Int { return 0 }
-    public var endIndex: Int { return storage.count }
+    public var startIndex: Int { return storage.startIndex }
+    public var endIndex: Int { return storage.endIndex }
 
     public subscript(index: Int) -> Element { return storage[index] }
 }
