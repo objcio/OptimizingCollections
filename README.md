@@ -34,7 +34,7 @@ structures in detail. The book is available [on objc.io](https://www.objc.io/boo
 the book also gets you an Xcode Playground that includes the entire text along
 with fully editable, live code. 
 
-[![Book Cover](Images/cover@2x.png)][gumroad]
+[![Book Cover](Images/cover@2x.png)](https://www.objc.io/books/optimizing-collections)
 
 Note that the code inside this repository was actually extracted directly from
 the code samples in the book.
