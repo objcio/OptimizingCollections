@@ -66,9 +66,12 @@ struct Value: Comparable {
 }
 
 do {
-    print((Value(42) as AnyObject).isEqual(Value(42) as AnyObject))
-    print((Value(42) as AnyObject).hash)
-    print((Value(42) as AnyObject).hash)
+    let value = Value(42)
+    let a = value as AnyObject
+    let b = value as AnyObject
+    print(a.isEqual(b))
+    print(a.hash)
+    print(b.hash)
 
     var values = OrderedSet<Value>()
     (1 ... 20).shuffled().map(Value.init).forEach { values.insert($0) }

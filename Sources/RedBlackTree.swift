@@ -127,16 +127,18 @@ extension RedBlackTree {
     }
 }
 
-public struct AlgebraicIndex<Element: Comparable> {
-    fileprivate var value: Element?
+extension RedBlackTree {
+    public struct Index {
+        fileprivate var value: Element?
+    }
 }
 
-extension AlgebraicIndex: Comparable {
-    public static func ==(left: AlgebraicIndex, right: AlgebraicIndex) -> Bool {
+extension RedBlackTree.Index: Comparable {
+    public static func ==(left: RedBlackTree<Element>.Index, right: RedBlackTree<Element>.Index) -> Bool {
         return left.value == right.value
     }
 
-    public static func <(left: AlgebraicIndex, right: AlgebraicIndex) -> Bool {
+    public static func <(left: RedBlackTree<Element>.Index, right: RedBlackTree<Element>.Index) -> Bool {
         if let lv = left.value, let rv = right.value { 
             return lv < rv 
         }
@@ -145,18 +147,18 @@ extension AlgebraicIndex: Comparable {
 }
 
 extension RedBlackTree {
-    var minimum: Element? {
+    func min() -> Element? {
         switch self {
         case .empty: 
             return nil 
         case let .node(_, value, left, _): 
-            return left.minimum ?? value
+            return left.min() ?? value
         }
     }
 }
 
 extension RedBlackTree {
-    var maximum: Element? {
+    func max() -> Element? {
         var node = self
         var maximum: Element? = nil
         while case let .node(_, value, _, right) = node {
@@ -168,24 +170,11 @@ extension RedBlackTree {
 }
 
 extension RedBlackTree: Collection {
-    public typealias Index = AlgebraicIndex<Element>
-
-    public var startIndex: Index { return Index(value: self.minimum) }
+    public var startIndex: Index { return Index(value: self.min()) }
     public var endIndex: Index { return Index(value: nil) }
 
     public subscript(i: Index) -> Element {
         return i.value!
-    }
-}
-
-extension RedBlackTree {
-    public var count: Int {
-        switch self {
-        case .empty:
-            return 0
-        case let .node(_, _, left, right):
-            return left.count + 1 + right.count
-        }
     }
 }
 
@@ -209,7 +198,7 @@ extension RedBlackTree {
             case .empty:
                 return (false, nil)
             case .node(_, element, _, let right):
-                return (true, right.minimum)
+                return (true, right.min())
             case let .node(_, value, left, _) where value > element:
                 let v = left.value(following: element)
                 return (v.found, v.next ?? value)
@@ -232,7 +221,7 @@ extension RedBlackTree {
                 node = right
             }
             else {
-                return (true, left.maximum)
+                return (true, left.max())
             }
         }
         return (false, previous)
@@ -250,6 +239,17 @@ extension RedBlackTree {
         let v = self.value(preceding: i.value!)
         precondition(v.found)
         return Index(value: v.next)
+    }
+}
+
+extension RedBlackTree {
+    public var count: Int {
+        switch self {
+        case .empty:
+            return 0
+        case let .node(_, _, left, right):
+            return left.count + 1 + right.count
+        }
     }
 }
 

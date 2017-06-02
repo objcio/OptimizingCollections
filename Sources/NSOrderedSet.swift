@@ -18,9 +18,9 @@ extension OrderedSet {
     fileprivate static func compare(_ a: Any, _ b: Any) -> ComparisonResult 
     {
         let a = a as! Element, b = b as! Element
-        return a < b ? .orderedAscending
-            : a > b ? .orderedDescending
-            : .orderedSame
+        if a < b { return .orderedAscending }
+        if a > b { return .orderedDescending }
+        return .orderedSame
     }
 }
 
@@ -65,7 +65,7 @@ extension OrderedSet {
 }
 
 extension OrderedSet {
-    fileprivate func slot(of value: Element) -> Int {
+    fileprivate func index(for value: Element) -> Int {
         return storage.index(
             of: value, 
             inSortedRange: NSRange(0 ..< storage.count),
@@ -78,7 +78,7 @@ extension OrderedSet {
     @discardableResult
     public mutating func insert(_ newElement: Element) -> (inserted: Bool, memberAfterInsert: Element) 
     {
-        let index = self.slot(of: newElement)
+        let index = self.index(for: newElement)
         if index < storage.count, storage[index] as! Element == newElement {
             return (false, storage[index] as! Element)
         }
