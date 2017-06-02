@@ -86,7 +86,7 @@ the book also gets you an Xcode Playground that includes the entire text along
 with fully editable, live code. You can open the playground in the iOS
 Playgrounds app, or in Xcode on Mac.
 
-[![Book Cover](Images/Gumroad%20Cover@2x.png)][gumroad]
+[![Book Cover](Images/cover@2x.png)][gumroad]
 
 [gumroad]: https://gum.co/OptimizingCollections
 
