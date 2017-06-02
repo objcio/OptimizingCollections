@@ -1,49 +1,16 @@
-# Optimizing Swift Collections
+# Optimizing Collections in Swift
 
-This repository contains an overabundance of multimedia content supplementing
-my [dotSwift 2017 talk about Optimizing Swift Collections][dotswift]. In this
-talk, I describe several ways to implement the same simple ordered set protocol
-in Swift, demonstrating how the language supports a number of surprisingly
-different approaches to programming.
+[![Book Cover](Images/cover@2x.png)][booklink]
 
-[dotswift]: http://www.thedotpost.com/2017/01/karoly-lorentey-optimizing-swift-collections
+This repository contains the sample code from the book [Optimizing Collections][booklink].
 
-- _Composition:_ Solving problems using the constructs we already have.
-- _Functional programming:_ Using pattern matching on algebraic data types and recursion to turn complicated algorithms into surprisingly simple code.
-- _Optimized copy-on-write:_ Using procedural programming to allow direct mutations of an existing value when possible.
-- _Cache-aware data structures:_ Understanding how the memory cache affects performance. Adapting our data structures to maximize spatial locality. 
-- _Benchmark-based micro-optimizations:_ Adding a lot more complexity to squeeze out the final drops of performance. Manually inlining `Array`'s implementation from stdlib and messing around with unsafe buffers results in speedups of a handful of extra percentage points.
+In this book, we show how to write very efficient Swift collection code. Throughout the book, we benchmark everything — with some surprising results. We implement custom data structures with value semantics and copy-on-write behavior such as sorted arrays, binary trees, red-black trees, and B-trees.
 
-At every step, we trade additional complexity for improved runtime performance, ending on an implementation that is ludicrously fast but also quite difficult to handle.
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
-
-- [The Book](#the-book)
-- [The Code](#the-code)
-- [The Video](#the-video)
-- [The App](#the-app)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## The Book
-
-I wrote a book to explain the implementation of each of these data
-structures in detail. The book is available [on objc.io](https://www.objc.io/books/optimizing-collections), in nicely formatted PDF and EPUB variants. Buying
-the book also gets you an Xcode Playground that includes the entire text along
-with fully editable, live code. 
-
-[![Book Cover](Images/cover@2x.png)](https://www.objc.io/books/optimizing-collections)
-
-Note that the code inside this repository was actually extracted directly from
-the code samples in the book.
-
+Even if you never implement your own collections, this book helps you reason about the performance of Swift code.
 
 ## The Code
 
-This repository includes the full source code of every algorithm I discussed in
-the talk:
+This repository includes the full source code of every algorithm discussed in the book:
 
 1. [`MyOrderedSet`](./Sources/NSOrderedSet.swift): A rudimentary Swift wrapper for the `NSOrderedSet` class in Foundation.
 2. [`SortedArray`](./Sources/SortedArray.swift): A simple collection storing elements in a sorted array, with O(n) insertions.
@@ -59,8 +26,7 @@ the talk:
 [btree]: https://github.com/lorentey/BTree
 
 As a bonus, all five data structures implement `BidirectionalCollection`, and
-they all have full value semantics. (This was cut from the talk to make it fit
-the format.)
+they all have full value semantics.
 
 Note that while this repository contains nice illustrations of various coding
 techniques, I don't recommend you use any of this code in your own projects. I
@@ -75,20 +41,13 @@ check out my [BTree package][btree] instead.
 
 ## The Video
 
-You can watch the video of the talk by clicking on the image below.
+You can watch the video of my talk at dotSwift 2017 about optimizing collections by clicking on the image below.
 
 [![dotSwift 2017 - Optimizing Swift Collections](https://img.youtube.com/vi/UdZP6JeTCkM/0.jpg)](https://www.youtube.com/watch?v=UdZP6JeTCkM)
 
 My slides are available on [Speaker Deck][speakerdeck].
 
-dotSwift talks are always a joy to watch; each year they have a great selection
-of speakers at excellent venues, and the organizers do an amazing job at
-capturing and editing the videos. I highly recommend you check out [the rest of
-this year's talks][talks], too; and if you can make it, you should not miss
-attending next year's conference in person.
-
 [speakerdeck]: https://speakerdeck.com/lorentey/optimizing-swift-collections
-[talks]: http://www.thedotpost.com/conference/dotswift-2017
 
 ## The App
 
@@ -104,3 +63,6 @@ can easily reproduce my results on your own computer.
 Tip: try implementing
 your own optimization ideas, and race them with my code! I'm sure you'll easily
 beat me if you try.
+
+
+[booklink]: https://www.objc.io/books/optimizing-collections
