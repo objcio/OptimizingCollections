@@ -20,29 +20,25 @@ At every step, we trade additional complexity for improved runtime performance, 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [The Video](#the-video)
-- [The Code](#the-code)
 - [The Book](#the-book)
+- [The Code](#the-code)
+- [The Video](#the-video)
 - [The App](#the-app)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## The Video
+## The Book
 
-You can watch the video of the talk by clicking on the image below.
+I wrote a book to explain the implementation of each of these data
+structures in detail. The book is available [on objc.io](https://www.objc.io/books/optimizing-collections), in nicely formatted PDF and EPUB variants. Buying
+the book also gets you an Xcode Playground that includes the entire text along
+with fully editable, live code. 
 
-[![dotSwift 2017 - Optimizing Swift Collections](https://img.youtube.com/vi/UdZP6JeTCkM/0.jpg)](https://www.youtube.com/watch?v=UdZP6JeTCkM)
+[![Book Cover](Images/cover@2x.png)][gumroad]
 
-My slides are available on [Speaker Deck][speakerdeck].
+Note that the code inside this repository was actually extracted directly from
+the code samples in the book.
 
-dotSwift talks are always a joy to watch; each year they have a great selection
-of speakers at excellent venues, and the organizers do an amazing job at
-capturing and editing the videos. I highly recommend you check out [the rest of
-this year's talks][talks], too; and if you can make it, you should not miss
-attending next year's conference in person.
-
-[speakerdeck]: https://speakerdeck.com/lorentey/optimizing-swift-collections
-[talks]: http://www.thedotpost.com/conference/dotswift-2017
 
 ## The Code
 
@@ -77,28 +73,22 @@ implement support for removing elements, or in fact any of method in
 For production-ready implementations of ordered collections, please
 check out my [BTree package][btree] instead.
 
-## The Book
+## The Video
 
-I'm writing a short book to explain the implementation of each of these data
-structures in detail. The beta preview of the book is available as a [100+-page
-ebook from Gumroad][gumroad], in nicely formatted PDF and EPUB variants. Buying
-the book also gets you an Xcode Playground that includes the entire text along
-with fully editable, live code. You can open the playground in the iOS
-Playgrounds app, or in Xcode on Mac.
+You can watch the video of the talk by clicking on the image below.
 
-[![Book Cover](Images/cover@2x.png)][gumroad]
+[![dotSwift 2017 - Optimizing Swift Collections](https://img.youtube.com/vi/UdZP6JeTCkM/0.jpg)](https://www.youtube.com/watch?v=UdZP6JeTCkM)
 
-[gumroad]: https://gum.co/OptimizingCollections
+My slides are available on [Speaker Deck][speakerdeck].
 
-(Naturally, buying the book now also gives you easy access to future updates of
-it.)
+dotSwift talks are always a joy to watch; each year they have a great selection
+of speakers at excellent venues, and the organizers do an amazing job at
+capturing and editing the videos. I highly recommend you check out [the rest of
+this year's talks][talks], too; and if you can make it, you should not miss
+attending next year's conference in person.
 
-This book is my first experimental step in publishing my own writing. Proceeds
-from the book help me keep doing stuff like this rather than working on
-commercial projects. If feedback is encouraging, I'll definitely write more.
-
-Note that the code inside this repository was actually extracted directly from
-the code samples in the book.
+[speakerdeck]: https://speakerdeck.com/lorentey/optimizing-swift-collections
+[talks]: http://www.thedotpost.com/conference/dotswift-2017
 
 ## The App
 
